@@ -25,6 +25,10 @@ export default new Router({
     {
       path: '/profile',
       component: Profile,
+    },
+    {
+      path: '/cart',
+      component: Cart,
     }
   ],
   mode: 'history'
