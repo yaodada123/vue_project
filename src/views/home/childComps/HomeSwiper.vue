@@ -1,6 +1,6 @@
 <template>
   <swiper>
-    <swiper-item v-for="item in banners" :key="key">
+    <swiper-item v-for="(item, index) in banners" :key="index">
       <a :href="item.link">
         <img :src="item.image" alt="">
       </a>
@@ -19,12 +19,12 @@
         default() {
           return []
         }
-      }
+      },
     },
     components: {
       Swiper,
       SwiperItem
-    }
+    },
   }
 </script>
 
