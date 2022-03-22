@@ -3,16 +3,19 @@
     <nav-bar class="home-nav">
       <div slot="center">购物街</div>
     </nav-bar>
-    <home-swiper :banners="banners" />
-    <recommend-view :recommends="recommends"></recommend-view>
-    <feature-view></feature-view>
-    <tab-control
-      :items="['流行', '新款', '精选']"
-      class="tab-control"
-      @tabClick = "tabClick"
-    ></tab-control>
-    <goods-list :goods="showGoods"></goods-list>
-    <ul>
+    <scroll class="content">
+      <home-swiper :banners="banners" />
+      <recommend-view :recommends="recommends"></recommend-view>
+      <feature-view></feature-view>
+      <tab-control
+        :items="['流行', '新款', '精选']"
+        class="tab-control"
+        @tabClick="tabClick"
+      ></tab-control>
+      <goods-list :goods="showGoods"></goods-list>
+    </scroll>
+
+    <!-- <ul>
       <li>123</li>
       <li>123</li>
       <li>123</li>
@@ -55,7 +58,7 @@
       <li>123</li>
       <li>123</li>
       <li>123</li>
-    </ul>
+    </ul> -->
   </div>
 </template>
 
@@ -63,10 +66,12 @@
 import HomeSwiper from "./childComps/HomeSwiper.vue";
 import RecommendView from "./childComps/RecommendView.vue";
 import FeatureView from "./childComps/FeatureView.vue";
-import GoodsList from "../../components/content/goods/GoodsList"
 
+import GoodsList from "../../components/content/goods/GoodsList";
 import TabControl from "@/components/content/tabControl/TabControl.vue";
 import NavBar from "@/components/common/navbar/NavBar.vue";
+import Scroll from "@/components/common/scroll/Scroll.vue";
+
 import { getHomeMultidata, getHomeGoods } from "@/network/home";
 
 export default {
@@ -77,6 +82,7 @@ export default {
     FeatureView,
     TabControl,
     GoodsList,
+    Scroll,
   },
   name: "Home",
   data() {
@@ -85,11 +91,11 @@ export default {
       recommends: [],
       /* 获取首页数据*/
       goods: {
-        'pop': { page: 0, list: [] },
-        'new': { page: 0, list: [] },
-        'sell': { page: 0, list: [] },
+        pop: { page: 0, list: [] },
+        new: { page: 0, list: [] },
+        sell: { page: 0, list: [] },
       },
-      currentType: 'pop',
+      currentType: "pop",
     };
   },
   created() {
@@ -104,14 +110,10 @@ export default {
   },
   methods: {
     tabClick(index) {
-      if(index == 0)
-        this.currentType = 'pop';
-      else if(index == 1)
-        this.currentType = 'new';
-      else 
-        this.currentType = 'sell'
+      if (index == 0) this.currentType = "pop";
+      else if (index == 1) this.currentType = "new";
+      else this.currentType = "sell";
     },
-
 
     /**
      * 网络请求函数，对函数做一层封装，避免created()生命周期函数臃肿
@@ -156,4 +158,13 @@ export default {
   top: 44px;
   z-index: 9;
 }
+  .content {
+    overflow: hidden;
+
+    position: absolute;
+    top: 44px;
+    bottom: 49px;
+    left: 0;
+    right: 0;
+  }
 </style>
