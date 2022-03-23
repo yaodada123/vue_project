@@ -3,7 +3,8 @@
     <nav-bar class="home-nav">
       <div slot="center">购物街</div>
     </nav-bar>
-    <scroll class="content" ref="scroll" :probe-type = "3" @scroll="backTopClick">
+    <scroll class="content" ref="scroll" :probe-type="3" @scroll="backTopClick"  :pull-up-load="true" @pullingUp = "uploadMore" 
+     >
       <home-swiper :banners="banners" />
       <recommend-view :recommends="recommends"></recommend-view>
       <feature-view></feature-view>
@@ -123,10 +124,16 @@ export default {
       this.$refs.scroll.scrollTo(0, 0);
     },
 
-    backTopClick(position) { // 判断滚动位置事件
+    backTopClick(position) {
+      // 判断滚动位置事件
       // console.log(position);
-      this.isShowBackTop = (-position.y) > 1000;
+      this.isShowBackTop = -position.y > 1000;
       // console.log(this.isShowBackTop);
+    },
+
+    uploadMore() {
+      this.getHomeGoods(this.currentType);
+      this.$refs.scroll.scroll.refresh();
     },
 
     /**
@@ -145,6 +152,8 @@ export default {
       getHomeGoods(type, page).then((res) => {
         this.goods[type].list.push(...res.data.list);
         this.goods[type].page += 1;
+
+        this.$refs.scroll.finishPullUp()
       });
     },
   },
