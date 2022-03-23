@@ -3,7 +3,7 @@
     <nav-bar class="home-nav">
       <div slot="center">购物街</div>
     </nav-bar>
-    <scroll class="content">
+    <scroll class="content" ref="scroll" :probe-type = "3" @scroll="backTopClick">
       <home-swiper :banners="banners" />
       <recommend-view :recommends="recommends"></recommend-view>
       <feature-view></feature-view>
@@ -14,7 +14,7 @@
       ></tab-control>
       <goods-list :goods="showGoods"></goods-list>
     </scroll>
-
+    <back-top @click.native="backClick" v-show="isShowBackTop"></back-top>
     <!-- <ul>
       <li>123</li>
       <li>123</li>
@@ -71,6 +71,7 @@ import GoodsList from "../../components/content/goods/GoodsList";
 import TabControl from "@/components/content/tabControl/TabControl.vue";
 import NavBar from "@/components/common/navbar/NavBar.vue";
 import Scroll from "@/components/common/scroll/Scroll.vue";
+import BackTop from "@/components/common/backtop/BackTop.vue";
 
 import { getHomeMultidata, getHomeGoods } from "@/network/home";
 
@@ -83,6 +84,7 @@ export default {
     TabControl,
     GoodsList,
     Scroll,
+    BackTop,
   },
   name: "Home",
   data() {
@@ -96,6 +98,7 @@ export default {
         sell: { page: 0, list: [] },
       },
       currentType: "pop",
+      isShowBackTop: false,
     };
   },
   created() {
@@ -113,6 +116,17 @@ export default {
       if (index == 0) this.currentType = "pop";
       else if (index == 1) this.currentType = "new";
       else this.currentType = "sell";
+    },
+
+    backClick() {
+      //  返回顶部按钮事件
+      this.$refs.scroll.scrollTo(0, 0);
+    },
+
+    backTopClick(position) { // 判断滚动位置事件
+      // console.log(position);
+      this.isShowBackTop = (-position.y) > 1000;
+      // console.log(this.isShowBackTop);
     },
 
     /**
@@ -158,13 +172,13 @@ export default {
   top: 44px;
   z-index: 9;
 }
-  .content {
-    overflow: hidden;
+.content {
+  overflow: hidden;
 
-    position: absolute;
-    top: 44px;
-    bottom: 49px;
-    left: 0;
-    right: 0;
-  }
+  position: absolute;
+  top: 44px;
+  bottom: 49px;
+  left: 0;
+  right: 0;
+}
 </style>
