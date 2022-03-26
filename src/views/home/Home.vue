@@ -3,6 +3,12 @@
     <nav-bar class="home-nav">
       <div slot="center">购物街</div>
     </nav-bar>
+    <!-- <tab-control
+        :items="['流行', '新款', '精选']"
+        @tabClick="tabClick"
+        ref="tabControl2"
+        v-show="isTabFixed"
+      ></tab-control> -->
     <scroll class="content" ref="scroll" :probe-type="3" @scroll="backTopClick"  :pull-up-load="true" @pullingUp = "uploadMore" 
      >
       <home-swiper :banners="banners" />
@@ -10,8 +16,8 @@
       <feature-view></feature-view>
       <tab-control
         :items="['流行', '新款', '精选']"
-        class="tab-control"
         @tabClick="tabClick"
+        ref="tabControl2"
       ></tab-control>
       <goods-list :goods="showGoods"></goods-list>
     </scroll>
@@ -100,6 +106,8 @@ export default {
       },
       currentType: "pop",
       isShowBackTop: false,
+      isTabFixed: false,
+      tabOffsetTop: 0,
     };
   },
   created() {
@@ -117,6 +125,8 @@ export default {
       if (index == 0) this.currentType = "pop";
       else if (index == 1) this.currentType = "new";
       else this.currentType = "sell";
+      this.$refs.tabControl1.currentIndex = index;
+      this.$refs.tabControl2.currentIndex = index;
     },
 
     backClick() {
@@ -127,13 +137,16 @@ export default {
     backTopClick(position) {
       // 判断滚动位置事件
       // console.log(position);
+      // 判断backTop是否显示
       this.isShowBackTop = -position.y > 1000;
       // console.log(this.isShowBackTop);
+      this.isTabFixed = (-position.y) > this.tabOffsetTop
     },
 
     uploadMore() {
       this.getHomeGoods(this.currentType);
       this.$refs.scroll.scroll.refresh();
+      // console.log('-----');
     },
 
     /**
@@ -162,6 +175,9 @@ export default {
       return this.goods[this.currentType].list;
     },
   },
+  mounted: {
+    
+  }
 };
 </script>
 
@@ -177,8 +193,7 @@ export default {
   z-index: 9;
 }
 .tab-control {
-  position: sticky;
-  top: 44px;
+  position: relative;
   z-index: 9;
 }
 .content {
