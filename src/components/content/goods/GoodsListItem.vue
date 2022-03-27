@@ -1,7 +1,7 @@
 <template>
-  <div class="goods-item">
+  <div class="goods-item" @click="itemClick">
     <img :src="goodsitem.show.img" alt="" />
-    <div class="goods-info">
+    <div class="goods-info" >
       <p>{{ goodsitem.title }}</p>
       <span class="price">{{ goodsitem.price }}</span>
       <span class="collect">{{ goodsitem.cfav }}</span>
@@ -15,7 +15,7 @@ export default {
 
   data() {
     return {
-      
+      iid : null,
     };
   },
   props: {
@@ -29,7 +29,15 @@ export default {
 
   mounted() {},
 
-  methods: {},
+  methods: {
+    itemClick() {
+      // console.log("点我成功");
+      // this.iid = this.$route.params.iid;
+      // console.log(this.goodsitem);
+      this.iid = this.goodsitem.iid
+      this.$router.push('/detail/' + this.iid);
+    }
+  },
 };
 </script>
 

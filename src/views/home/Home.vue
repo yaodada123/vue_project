@@ -175,9 +175,6 @@ export default {
       return this.goods[this.currentType].list;
     },
   },
-  mounted: {
-    
-  }
 };
 </script>
 
