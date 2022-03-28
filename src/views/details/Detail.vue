@@ -21,6 +21,9 @@
 
       <!-- 商品评论信息 -->
       <detail-comment-info :commentInfo="commentInfo"></detail-comment-info>
+
+      <!-- 商品推荐信息 -->
+      <goods-list :goods="goodsList"></goods-list>
     </scroll>
   </div>
 </template>
@@ -29,7 +32,7 @@
 import DetailNavBar from "./childComps/DetailNavBar.vue";
 import DetailSwiper from "./childComps/DetailSwiper.vue";
 
-import { getDetails, Goods, Shop, GoodsParam } from "../../network/detail";
+import { getDetails, Goods, Shop, GoodsParam, getRecommend } from "../../network/detail";
 
 import Scroll from "../../components/common/scroll/Scroll.vue";
 import DetailBaseInfo from "./childComps/DetailBaseInfo.vue";
@@ -37,6 +40,8 @@ import DetailShopInfo from "./childComps/DetailShopInfo.vue";
 import DetailGoodsInfo from "./childComps/DetailGoodsInfo.vue";
 import DetailParamInfo from './childComps/DetailParamInfo.vue';
 import DetailCommentInfo from './childComps/DetailCommentInfo.vue';
+import GoodsList from '../../components/content/goods/GoodsList.vue';
+import GoodsListItem from '../../components/content/goods/GoodsListItem.vue';
 
 export default {
   name: "Detail",
@@ -50,6 +55,7 @@ export default {
       detailInfo: {},
       goodsparam: {},
       commentInfo: {}, // 存取评论的一条信息
+      goodsList: [],
     };
   },
 
@@ -62,6 +68,8 @@ export default {
     DetailGoodsInfo,
     DetailParamInfo,
     DetailCommentInfo,
+    GoodsList,
+    GoodsListItem,
   },
   created() {
     // 保存传入的iid
@@ -72,7 +80,7 @@ export default {
     getDetails(this.iid).then((res) => {
       // console.log(res);
       const data = res.result;
-      console.log(data);
+      // console.log(data);
       // 获取轮播图片
       this.topImages = data.itemInfo.topImages;
       // 获取商品基本信息
@@ -81,6 +89,13 @@ export default {
         data.columns,
         data.shopInfo.services
       );
+      // 网络请求 请求商品推荐数据
+    getRecommend().then( (res) => {
+      // console.log(res);
+      this.goodsList = res.data.list;
+      // console.log(this.goodsList);
+    } )
+
       // 获取店铺信息
       this.shop = new Shop(data.shopInfo);
       // 获取商品详情数据
