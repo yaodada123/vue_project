@@ -3,7 +3,7 @@
     <!-- 导航条 -->
     <detail-nav-bar class="detail-nav"></detail-nav-bar>
 
-    <scroll class="content">
+    <scroll class="content" ref="scroll">
       <!-- 轮播图 -->
       <detail-swiper :top-images="topImages"></detail-swiper>
 
@@ -14,10 +14,13 @@
       <detail-shop-info :shop="shop"></detail-shop-info>
 
       <!-- 商品详情页 -->
-      <detail-goods-info :detailInfo="detailInfo"></detail-goods-info>
+      <detail-goods-info :detailInfo="detailInfo" @imageLoad = "imageLoad"></detail-goods-info>
 
       <!-- 商品参数信息 -->
       <detail-param-info :paramInfo="goodsparam"></detail-param-info>
+
+      <!-- 商品评论信息 -->
+      <detail-comment-info :commentInfo="commentInfo"></detail-comment-info>
     </scroll>
   </div>
 </template>
@@ -28,11 +31,12 @@ import DetailSwiper from "./childComps/DetailSwiper.vue";
 
 import { getDetails, Goods, Shop, GoodsParam } from "../../network/detail";
 
+import Scroll from "../../components/common/scroll/Scroll.vue";
 import DetailBaseInfo from "./childComps/DetailBaseInfo.vue";
 import DetailShopInfo from "./childComps/DetailShopInfo.vue";
-import Scroll from "../../components/common/scroll/Scroll.vue";
 import DetailGoodsInfo from "./childComps/DetailGoodsInfo.vue";
 import DetailParamInfo from './childComps/DetailParamInfo.vue';
+import DetailCommentInfo from './childComps/DetailCommentInfo.vue';
 
 export default {
   name: "Detail",
@@ -45,6 +49,7 @@ export default {
       shop: {},
       detailInfo: {},
       goodsparam: {},
+      commentInfo: {}, // 存取评论的一条信息
     };
   },
 
@@ -56,6 +61,7 @@ export default {
     Scroll,
     DetailGoodsInfo,
     DetailParamInfo,
+    DetailCommentInfo,
   },
   created() {
     // 保存传入的iid
@@ -66,7 +72,7 @@ export default {
     getDetails(this.iid).then((res) => {
       // console.log(res);
       const data = res.result;
-      // console.log(data);
+      console.log(data);
       // 获取轮播图片
       this.topImages = data.itemInfo.topImages;
       // 获取商品基本信息
@@ -81,6 +87,11 @@ export default {
       this.detailInfo = data.detailInfo;
       // 获取商品参数信息
       this.goodsparam = new GoodsParam(data.itemParams.info, data.itemParams.rule )
+      // 获取商品评论信息
+      if(data.rate.cRate != 0)
+      {
+        this.commentInfo = data.rate.list[0];
+      }
     });
   },
   // activated() {
@@ -91,7 +102,12 @@ export default {
 
   mounted() {},
 
-  methods: {},
+  methods: {
+    imageLoad() {
+      // console.log(123);
+      this.$refs.scroll.refresh()
+    }
+  },
 };
 </script>
 

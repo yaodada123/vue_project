@@ -55,7 +55,14 @@ export default {
     },
     finishPullUp() {
         this.scroll.finishPullUp()
-      }
+      },
+    
+    getScrollY() {
+      return this.scroll ? this.scroll.y : 0;
+    },
+    refresh() {
+      this.scroll && this.scroll.refresh();
+    }
   },
 };
 </script>
