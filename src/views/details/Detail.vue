@@ -7,7 +7,7 @@
       ref="nav"
     ></detail-nav-bar>
 
-    <scroll class="content" ref="scroll"  :probeType="3" @scroll="scroll">
+    <scroll class="content" ref="scroll" :probeType="3" @scroll="scroll">
       <!-- 轮播图 -->
       <detail-swiper :top-images="topImages"></detail-swiper>
 
@@ -39,6 +39,12 @@
       <!-- 商品推荐信息 -->
       <goods-list :goods="goodsList" ref="goodsList"></goods-list>
     </scroll>
+
+    <!-- 底部加入购物车栏 -->
+    <detail-bottom-bar @addToCart="addToCart"></detail-bottom-bar>
+
+    <!-- 加入购物车成功弹窗显示 -->
+    <toast ref="toast"></toast>
   </div>
 </template>
 
@@ -52,16 +58,20 @@ import {
   Shop,
   GoodsParam,
   getRecommend,
-} from "../../network/detail";
+} from "@/network/detail";
 
-import Scroll from "../../components/common/scroll/Scroll.vue";
+import Scroll from "@/components/common/scroll/Scroll.vue";
 import DetailBaseInfo from "./childComps/DetailBaseInfo.vue";
 import DetailShopInfo from "./childComps/DetailShopInfo.vue";
 import DetailGoodsInfo from "./childComps/DetailGoodsInfo.vue";
 import DetailParamInfo from "./childComps/DetailParamInfo.vue";
 import DetailCommentInfo from "./childComps/DetailCommentInfo.vue";
-import GoodsList from "../../components/content/goods/GoodsList.vue";
-import GoodsListItem from "../../components/content/goods/GoodsListItem.vue";
+import GoodsList from "@/components/content/goods/GoodsList.vue";
+import GoodsListItem from "@/components/content/goods/GoodsListItem.vue";
+import DetailBottomBar from "./childComps/DetailBottomBar.vue";
+import Toast from "@/components/common/toast/Toast.vue";
+
+import {mapActions} from 'vuex'
 
 export default {
   name: "Detail",
@@ -92,7 +102,10 @@ export default {
     DetailCommentInfo,
     GoodsList,
     GoodsListItem,
+    DetailBottomBar,
+    Toast,
   },
+
   created() {
     // 保存传入的iid
     this.iid = this.$route.params.iid;
@@ -146,10 +159,14 @@ export default {
   },
 
   methods: {
+
+    ...mapActions({
+        addCart: 'addToCart'
+      }),
+
     imageLoad() {
       // console.log(123);
       this.$refs.scroll.refresh();
-
 
       // 获取offsetTop值便于点击跳转
       this.titleTopY.push(0);
@@ -165,16 +182,26 @@ export default {
     scroll(position) {
       // console.log(position.y);
       // console.log(this.titleTopY);
-      if(-position.y >= this.titleTopY[3])
-        this.index = 3;
-      else if(-position.y >= this.titleTopY[2])
-        this.index = 2;
-      else if(-position.y >= this.titleTopY[1])
-        this.index = 1;
-      else 
-        this.index = 0;
-      this.$refs.nav.curentIndex = this.index
+      if (-position.y >= this.titleTopY[3]) this.index = 3;
+      else if (-position.y >= this.titleTopY[2]) this.index = 2;
+      else if (-position.y >= this.titleTopY[1]) this.index = 1;
+      else this.index = 0;
+      this.$refs.nav.curentIndex = this.index;
       // console.log(this.index);
+    },
+    addToCart() {
+      // 将信息保存到store中
+      const obj = {};
+      obj.iid = this.iid;
+      obj.imgURL = this.topImages[0];
+      obj.title = this.goods.title;
+      obj.desc = this.goods.desc;
+      obj.price = this.goods.realPrice;
+
+      console.log(obj);
+      this.addCart(obj).then(() => {
+          this.$toast({message: '加入购物车成功'})
+        })
     },
   },
 };
