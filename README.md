@@ -1,6 +1,8 @@
 # Supermall-coderwhy老师B站视频项目
 
 > 本项目，就是B站coderwhy老师的vue课程最后的仿蘑菇街电商项目，跟着老师把项目做了一遍，项目接口需要找老师购买的，毕竟这么久老师还能保存这个接口也不容易，友友们也要自觉哈, 附老师微信号：coderwhy003
+>
+> 附B站视频链接： [最全最新Vue、Vuejs教程，从入门到精通_哔哩哔哩_bilibili](https://www.bilibili.com/video/BV15741177Eh?spm_id_from=333.337.search-card.all.click)
 
 
 
